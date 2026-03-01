@@ -23,19 +23,60 @@ const { tag, posts } = Astro.props;
 ---
 
 <Base title={`#${tag} — OpsNotes`} description={`Статьи по теме ${tag}`}>
-  <div class="container" style="padding-top:3rem;padding-bottom:4rem;position:relative;z-index:1;">
-    <a href="/" style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);display:inline-block;margin-bottom:2rem;transition:color 0.2s;">← Все статьи</a>
+  <div class="container page">
+    <a href="/" class="back">← Все статьи</a>
 
-    <div style="margin-bottom:2.5rem;">
-      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.1em;">// Тег</div>
-      <h1 style="font-family:var(--serif);font-size:2.5rem;font-weight:300;color:#e8f0ec;">#{tag}</h1>
-      <p style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);margin-top:0.5rem;">{posts.length} статей</p>
-    </div>
+    <header>
+      <p class="label">Тег</p>
+      <h1>#{tag}</h1>
+      <p class="count">{posts.length} {posts.length === 1 ? 'статья' : 'статей'}</p>
+    </header>
 
-    <div style="max-width:780px;">
-      {posts.map((post, i) => (
-        <PostCard post={post} index={i} />
+    <div class="posts">
+      {posts.map(post => (
+        <PostCard post={post} />
       ))}
     </div>
   </div>
 </Base>
+
+<style>
+  .page {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+  }
+
+  .back {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 2.5rem;
+  }
+
+  .back:hover { color: var(--text); }
+
+  header { margin-bottom: 2.5rem; }
+
+  .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+
+  .count {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .posts { max-width: 780px; }
+</style>
