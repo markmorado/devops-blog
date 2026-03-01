@@ -3,7 +3,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://your-blog.com', // ← замени на свой домен
+  site: 'https://blog.tzim.uz', // ← замени на свой домен
   integrations: [
     mdx(),
     sitemap(),
