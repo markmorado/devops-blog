@@ -1,0 +1,256 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+// Получаем все опубликованные статьи, сортируем по дате
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const featuredPost = posts.find(p => p.data.featured) ?? posts[0];
+const otherPosts = posts.filter(p => p.slug !== featuredPost?.slug);
+
+// Собираем все теги
+const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
+---
+
+<Base title="Tzim — DevOps blog">
+  <!-- Hero -->
+  <section class="hero container">
+    <div class="hero-label">DevOps / SRE / Infrastructure</div>
+    <h1>Заметки об<br><em>инфраструктуре</em><br>без воды.</h1>
+    <p class="hero-desc">
+      Реальные решения реальных проблем. Docker, Proxmox, DNS, CI/CD —
+      то, что действительно работает в продакшене.
+    </p>
+    <div class="hero-stats">
+      <div>
+        <span class="stat-num">{posts.length}</span>
+        <span class="stat-label">Статей</span>
+      </div>
+      <div>
+        <span class="stat-num">{allTags.length}</span>
+        <span class="stat-label">Тем</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content grid -->
+  <div class="content-grid container">
+    <div class="posts-col">
+      <div class="section-header">
+        <span class="section-label">// Последние статьи</span>
+      </div>
+
+      {featuredPost && <PostCard post={featuredPost} featured={true} />}
+
+      <div class="post-list">
+        {otherPosts.map((post, i) => (
+          <PostCard post={post} index={i} />
+        ))}
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Теги -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">> Теги</div>
+        <div class="tag-cloud">
+          {allTags.map(tag => (
+            <a href={`/tags/${tag}`} class="tag-pill">{tag}</a>
+          ))}
+        </div>
+      </div>
+
+      <!-- RSS -->
+      <div class="sidebar-card rss-card">
+        <div class="sidebar-title">> Подписка</div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">
+          Новые статьи через RSS или Telegram
+        </p>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <a href="/rss.xml" class="sub-btn">
+            <span>RSS Feed</span>
+            <span>→</span>
+          </a>
+          <a href="https://t.me/yourchannel" class="sub-btn sub-btn-tg">
+            <span>Telegram</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-label::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: #e8f0ec;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  h1 em { color: var(--accent); font-style: italic; }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    color: var(--accent);
+    display: block;
+    font-weight: 700;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Content grid */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 4rem;
+  }
+
+  .section-header { margin-bottom: 1.5rem; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .section-label::first-child { color: var(--accent); }
+
+  /* Sidebar */
+  .sidebar {
+    position: sticky;
+    top: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+
+  .sidebar-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1.25rem;
+  }
+
+  .sidebar-title::first-letter { color: var(--accent); }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag-pill {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .tag-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,229,160,0.05);
+    text-decoration: none;
+  }
+
+  .sub-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .sub-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .sub-btn-tg:hover { border-color: #64c8ff; color: #64c8ff; }
+
+  @media (max-width: 768px) {
+    .content-grid { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+  }
+</style>
