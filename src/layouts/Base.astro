@@ -18,58 +18,72 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="canonical" href={canonicalURL} />
 
-  <!-- SEO -->
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="robots" content="index, follow" />
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   {ogImage && <meta property="og:image" content={ogImage} />}
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
 
-  <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="OpsNotes RSS" href="/rss.xml" />
-
-  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Prevent flash of wrong theme -->
+  <script is:inline>
+    const saved = localStorage.getItem('theme');
+    document.documentElement.dataset.theme = saved ?? 'dark';
+  </script>
 </head>
 <body>
 
-  <nav>
-    <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
-      <a href="/" style="font-family:var(--mono);font-size:0.9rem;color:var(--accent);display:flex;align-items:center;gap:6px;">
-        <span style="color:var(--muted)">[</span>OpsNotes<span style="color:var(--muted)">]</span>
-      </a>
-      <ul style="display:flex;gap:2rem;list-style:none;">
-        <li><a href="/" style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;transition:color 0.2s">Статьи</a></li>
-        <li><a href="/tags" style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;transition:color 0.2s">Теги</a></li>
-        <li><a href="/about" style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;transition:color 0.2s">Обо мне</a></li>
-        <li><a href="/rss.xml" style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;transition:color 0.2s">RSS</a></li>
-      </ul>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="/" class="site-name">OpsNotes</a>
+        <div class="nav-right">
+          <ul>
+            <li><a href="/">Статьи</a></li>
+            <li><a href="/tags">Теги</a></li>
+            <li><a href="/about">Обо мне</a></li>
+            <li><a href="/rss.xml">RSS</a></li>
+          </ul>
+          <button class="theme-toggle" id="theme-toggle" aria-label="Переключить тему">
+            <!-- Sun: shown in dark mode -->
+            <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <!-- Moon: shown in light mode -->
+            <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <main style="position:relative;z-index:1;">
+  <main>
     <slot />
   </main>
 
-  <footer style="position:relative;z-index:1;border-top:1px solid var(--border);padding:2rem 0;margin-top:4rem;">
-    <div class="container" style="display:flex;align-items:center;justify-content:space-between;">
-      <span style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);">
-        © {new Date().getFullYear()} OpsNotes · Сделано на <span style="color:var(--accent)">Astro</span>
-      </span>
-      <div style="display:flex;gap:1.5rem;">
-        <a href="https://github.com/yourname" style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);">GitHub</a>
-        <a href="https://t.me/yourchannel" style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);">Telegram</a>
-        <a href="/rss.xml" style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);">RSS</a>
+  <footer>
+    <div class="container">
+      <span>© {new Date().getFullYear()} OpsNotes</span>
+      <div class="footer-links">
+        <a href="https://github.com/yourname">GitHub</a>
+        <a href="https://t.me/yourchannel">Telegram</a>
+        <a href="/rss.xml">RSS</a>
       </div>
     </div>
   </footer>
@@ -78,14 +92,100 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 </html>
 
 <style>
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(13,15,15,0.85);
-    backdrop-filter: blur(20px);
+  header {
     border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
   }
 
-  nav a:hover { color: var(--accent) !important; text-decoration: none; }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-name {
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  ul a {
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  ul a:hover { color: var(--text); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 6rem;
+  }
+
+  footer .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover { color: var(--text); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+  }
+
+  .theme-toggle:hover { color: var(--text); }
+
+  /* Dark (default): show sun to switch to light */
+  .icon-moon { display: none; }
+  /* Light mode: show moon to switch to dark */
+  :root[data-theme="light"] .icon-sun { display: none; }
+  :root[data-theme="light"] .icon-moon { display: block; }
+
+  @media (max-width: 600px) {
+    ul { gap: 1.25rem; }
+  }
 </style>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  btn?.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme ?? 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+  });
+</script>

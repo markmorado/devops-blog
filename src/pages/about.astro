@@ -3,14 +3,10 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base title="Обо мне — OpsNotes">
-  <div class="container" style="max-width:680px;padding-top:4rem;padding-bottom:4rem;position:relative;z-index:1;">
-    <a href="/" style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);display:inline-block;margin-bottom:2rem;">← Назад</a>
+  <div class="container page">
+    <a href="/" class="back">← Назад</a>
 
-    <div style="font-family:var(--mono);font-size:0.7rem;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem;">// О блоге</div>
-
-    <h1 style="font-family:var(--serif);font-size:2.5rem;font-weight:300;color:#e8f0ec;margin-bottom:2rem;line-height:1.2;">
-      Кто это пишет<br>и зачем
-    </h1>
+    <h1>Кто это пишет<br>и зачем</h1>
 
     <div class="prose">
       <p>
@@ -38,3 +34,29 @@ import Base from '../layouts/Base.astro';
     </div>
   </div>
 </Base>
+
+<style>
+  .page {
+    max-width: 680px;
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+  }
+
+  .back {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 2.5rem;
+  }
+
+  .back:hover { color: var(--text); }
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+</style>
