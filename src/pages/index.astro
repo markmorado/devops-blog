@@ -8,6 +8,20 @@ const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTim
 
 const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
 
+const CATEGORY_LABELS: Record<string, string> = {
+  'ci-cd':          'CI/CD',
+  'virtualization': 'Виртуализация',
+  'infrastructure': 'Инфраструктура',
+};
+
+// Категории с количеством статей
+const catMap = new Map<string, number>();
+for (const post of posts) {
+  const cat = post.data.category;
+  if (cat) catMap.set(cat, (catMap.get(cat) ?? 0) + 1);
+}
+const categories = [...catMap.entries()].sort((a, b) => b[1] - a[1]);
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
@@ -51,6 +65,20 @@ const jsonLd = {
       </div>
 
       <aside>
+        <div class="aside-section">
+          <h2>Категории</h2>
+          <ul class="cat-list">
+            {categories.map(([slug, count]) => (
+              <li>
+                <a href={`/categories/${slug}`} class="cat-item">
+                  <span class="cat-name">{CATEGORY_LABELS[slug] ?? slug}</span>
+                  <span class="cat-count">{count}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div class="aside-section">
           <h2>Теги</h2>
           <div class="tag-list">
@@ -148,6 +176,38 @@ const jsonLd = {
   }
 
   .tag-list .tag:hover { color: var(--text); }
+
+  /* Категории в сайдбаре */
+  .cat-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .cat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+  }
+
+  .cat-list li:first-child .cat-item { border-top: 1px solid var(--border); }
+
+  .cat-name {
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+
+  .cat-item:hover .cat-name { color: var(--muted); }
+
+  .cat-count {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
 
   @media (max-width: 700px) {
     .layout { grid-template-columns: 1fr; }
