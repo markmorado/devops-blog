@@ -1,4 +1,4 @@
-# OpsNotes — DevOps блог на Astro
+# TZIM Blog — DevOps блог на Astro
 
 Минималистичный DevOps блог. Тёмная тема, Markdown статьи, RSS, теги.
 
@@ -90,6 +90,6 @@ docker compose up -d
 }
 ```
 
-Название блога — в `src/layouts/Base.astro` (ищи "OpsNotes").
+Название блога — в `src/layouts/Base.astro` (ищи "TZIM Blog").
 
 Домен — в `astro.config.mjs`, поле `site`.
