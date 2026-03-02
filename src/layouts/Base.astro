@@ -7,7 +7,7 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description = 'DevOps блог — Docker, Proxmox, CI/CD без воды', ogImage } = Astro.props;
+const { title, description = 'TZIM Blog — DevOps: Docker, Proxmox, CI/CD', ogImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -32,7 +32,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
 
-  <link rel="alternate" type="application/rss+xml" title="OpsNotes RSS" href="/rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title="TZIM Blog RSS" href="/rss.xml" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <!-- Prevent flash of wrong theme -->
@@ -46,7 +46,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <header>
     <div class="container">
       <nav>
-        <a href="/" class="site-name">OpsNotes</a>
+        <a href="/" class="site-name">TZIM Blog</a>
         <div class="nav-right">
           <ul>
             <li><a href="/">Статьи</a></li>
@@ -79,7 +79,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
   <footer>
     <div class="container">
-      <span>© {new Date().getFullYear()} OpsNotes</span>
+      <span>© {new Date().getFullYear()} TZIM Blog</span>
       <div class="footer-links">
         <a href="https://github.com/yourname">GitHub</a>
         <a href="https://t.me/yourchannel">Telegram</a>

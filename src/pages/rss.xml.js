@@ -6,8 +6,8 @@ export async function GET(context) {
   const sorted = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
   return rss({
-    title: 'OpsNotes — DevOps блог',
-    description: 'Docker, Proxmox, CI/CD без воды',
+    title: 'TZIM Blog',
+    description: 'DevOps: Docker, Proxmox, CI/CD',
     site: context.site,
     items: sorted.map(post => ({
       title: post.data.title,
