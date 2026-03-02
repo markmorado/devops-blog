@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Поиск — TZIM Blog" description="Поиск по статьям TZIM Blog">
+  <div class="container page">
+    <h1>Поиск</h1>
+    <div id="search"></div>
+  </div>
+</Base>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+
+<script is:inline>
+  // Pagefind создаётся после сборки (postbuild), поэтому загружаем динамически
+  (async () => {
+    try {
+      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+      new PagefindUI({
+        element: '#search',
+        showImages: false,
+        resetStyles: false,
+        translations: {
+          placeholder: 'Поиск по статьям...',
+          zero_results: 'Ничего не найдено по запросу "[SEARCH_TERM]"',
+          many_results: '[COUNT] результатов по запросу "[SEARCH_TERM]"',
+          one_result: '[COUNT] результат по запросу "[SEARCH_TERM]"',
+          alt_search: 'Нет результатов по "[SEARCH_TERM]". Попробуем "[DIFFERENT_TERM]"?',
+          search_suggestion: 'Нет результатов по "[SEARCH_TERM]". Показываем результаты по "[DIFFERENT_TERM]"',
+          searching: 'Поиск по "[SEARCH_TERM]"...',
+        },
+      });
+    } catch {
+      const el = document.getElementById('search');
+      if (el) el.innerHTML = '<p class="search-unavailable">Поиск доступен только после <code>npm run build</code>.</p>';
+    }
+  })();
+</script>
+
+<style is:global>
+  /* Адаптация Pagefind UI под текущую тему */
+  :root {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--text);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--bg);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--code-bg);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 3px;
+    --pagefind-ui-font: var(--font);
+  }
+</style>
+
+<style>
+  .page {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+    max-width: 720px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+
+  .search-unavailable {
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 1rem 0;
+  }
+
+  .search-unavailable code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+</style>

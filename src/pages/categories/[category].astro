@@ -1,0 +1,89 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const categories = [...new Set(posts.map(p => p.data.category).filter(Boolean))];
+
+  return categories.map(category => ({
+    params: { category },
+    props: {
+      category,
+      posts: posts
+        .filter(p => p.data.category === category)
+        .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()),
+    },
+  }));
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  'ci-cd':          'CI/CD',
+  'virtualization': 'Виртуализация',
+  'infrastructure': 'Инфраструктура',
+};
+
+const { category, posts } = Astro.props;
+const label = CATEGORY_LABELS[category] ?? category;
+---
+
+<Base title={`${label} — TZIM Blog`} description={`Статьи по категории ${label}`}>
+  <div class="container page">
+    <a href="/categories" class="back">← Все категории</a>
+
+    <header>
+      <p class="label">Категория</p>
+      <h1>{label}</h1>
+      <p class="count">{posts.length} {posts.length === 1 ? 'статья' : 'статей'}</p>
+    </header>
+
+    <div class="posts">
+      {posts.map(post => (
+        <PostCard post={post} />
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+  }
+
+  .back {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 2.5rem;
+  }
+
+  .back:hover { color: var(--text); }
+
+  header { margin-bottom: 2.5rem; }
+
+  .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+
+  .count {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .posts { max-width: 780px; }
+</style>

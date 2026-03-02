@@ -3,6 +3,7 @@ title: "PowerDNS с PostgreSQL бэкендом в Docker: от нуля до п
 date: 2025-02-20
 excerpt: "Поднимаем полноценный DNS сервер на PowerDNS с хранением зон в PostgreSQL. Docker Compose, автоматические миграции и PowerDNS-Admin в комплекте."
 tags: ["dns", "docker", "postgresql"]
+category: "infrastructure"
 readTime: 9
 featured: false
 ---

@@ -7,8 +7,14 @@ interface Props {
   featured?: boolean;
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  'ci-cd':          'CI/CD',
+  'virtualization': 'Виртуализация',
+  'infrastructure': 'Инфраструктура',
+};
+
 const { post } = Astro.props;
-const { title, date, tags, readTime, excerpt } = post.data;
+const { title, date, tags, readTime, excerpt, category } = post.data;
 
 const formattedDate = new Intl.DateTimeFormat('ru-RU', {
   year: 'numeric', month: 'short', day: 'numeric'
@@ -20,6 +26,12 @@ const formattedDate = new Intl.DateTimeFormat('ru-RU', {
     <time>{formattedDate}</time>
     <span>·</span>
     <span>{readTime} мин</span>
+    {category && (
+      <>
+        <span>·</span>
+        <a href={`/categories/${category}`} class="cat-link">{CATEGORY_LABELS[category] ?? category}</a>
+      </>
+    )}
   </div>
   <h2><a href={`/posts/${post.slug}`}>{title}</a></h2>
   <p class="excerpt">{excerpt}</p>
@@ -81,4 +93,13 @@ const formattedDate = new Intl.DateTimeFormat('ru-RU', {
   }
 
   .tag:hover { color: var(--text); }
+
+  .cat-link {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .cat-link:hover { color: var(--text); }
 </style>

@@ -3,6 +3,7 @@ title: "GitHub Actions для деплоя на VPS: кэш, артефакты 
 date: 2025-02-14
 excerpt: "Строим production-ready CI/CD пайплайн на GitHub Actions с кэшированием Docker слоёв, умным rollback и уведомлениями в Telegram."
 tags: ["ci-cd", "docker", "github-actions"]
+category: "ci-cd"
 readTime: 11
 featured: false
 ---
