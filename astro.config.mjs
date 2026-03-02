@@ -1,12 +1,12 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
-// sitemap убираем отсюда
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://devops-blog.pages.dev',
   integrations: [
     mdx(),
-    // sitemap() — убираем
+    sitemap(),
   ],
   markdown: {
     shikiConfig: {
