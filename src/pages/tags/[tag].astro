@@ -22,14 +22,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { tag, posts } = Astro.props;
 ---
 
-<Base title={`#${tag} — TZIM Blog`} description={`Статьи по теме ${tag}`}>
+<Base title={`#${tag} — TZIM Blog`} description={`${tag} mavzusidagi maqolalar`}>
   <div class="container page">
-    <a href="/" class="back">← Все статьи</a>
+    <a href="/" class="back">← Barcha maqolalar</a>
 
     <header>
-      <p class="label">Тег</p>
+      <p class="label">Teg</p>
       <h1>#{tag}</h1>
-      <p class="count">{posts.length} {posts.length === 1 ? 'статья' : 'статей'}</p>
+      <p class="count">{posts.length} ta maqola</p>
     </header>
 
     <div class="posts">

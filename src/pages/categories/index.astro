@@ -4,8 +4,9 @@ import { getCollection } from 'astro:content';
 
 const CATEGORY_LABELS: Record<string, string> = {
   'ci-cd':          'CI/CD',
-  'virtualization': 'Виртуализация',
-  'infrastructure': 'Инфраструктура',
+  'virtualization': 'Virtualizatsiya',
+  'infrastructure': 'Infratuzilma',
+  'monitoring':     'Monitoring',
 };
 
 const posts = await getCollection('posts', ({ data }) => !data.draft);
@@ -20,10 +21,10 @@ for (const post of posts) {
 const categories = [...catMap.entries()].sort((a, b) => b[1] - a[1]);
 ---
 
-<Base title="Категории — TZIM Blog" description="Все категории блога TZIM Blog">
+<Base title="Kategoriyalar — TZIM Blog" description="TZIM Blog barcha kategoriyalari">
   <div class="container page">
-    <h1>Категории</h1>
-    <p class="subtitle">{categories.length} категории · {posts.length} статей</p>
+    <h1>Kategoriyalar</h1>
+    <p class="subtitle">{categories.length} ta kategoriya · {posts.length} ta maqola</p>
 
     <div class="cat-list">
       {categories.map(([slug, count]) => (
@@ -32,7 +33,7 @@ const categories = [...catMap.entries()].sort((a, b) => b[1] - a[1]);
             <span class="cat-name">{CATEGORY_LABELS[slug] ?? slug}</span>
             <span class="cat-slug">/{slug}</span>
           </div>
-          <span class="cat-count">{count} {count === 1 ? 'статья' : 'статей'}</span>
+          <span class="cat-count">{count} ta maqola</span>
         </a>
       ))}
     </div>

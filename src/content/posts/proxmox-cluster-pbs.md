@@ -1,81 +1,81 @@
 ---
-title: "Proxmox + PBS: настройка кластера с бэкапами за 2 часа"
+title: "Proxmox + PBS: 2 soatda zaxira nusxalar bilan klasterni sozlash"
 date: 2025-02-28
-excerpt: "Разворачиваем трёхнодовый Proxmox кластер с нуля, настраиваем Proxmox Backup Server в LXC контейнере и автоматизируем ротацию снапшотов."
+excerpt: "Uch tugunli Proxmox klasterini noldan o'rnatamiz, LXC konteynerida Proxmox Backup Server ni sozlaymiz va snapshotlar rotatsiyasini avtomatlashtirish."
 tags: ["proxmox", "backup", "linux"]
 category: "virtualization"
 readTime: 12
 featured: true
 ---
 
-## Что будем делать
+## Nima qilamiz
 
-Поднимем минимальный Proxmox VE кластер из трёх нод и настроим Proxmox Backup Server (PBS) для централизованного хранения бэкапов. Всё в локальной сети, без облаков.
+Uch tugunli minimal Proxmox VE klasterini o'rnatamiz va zaxira nusxalarni markazlashgan saqlash uchun Proxmox Backup Server (PBS) ni sozlaymiz. Hammasi mahalliy tarmoqda, bulutsiz.
 
-**Что понадобится:**
-- 3 сервера или VM с Proxmox VE 8.x
-- 1 дополнительная VM под PBS
-- Shared сеть между нодами
+**Kerak bo'ladi:**
+- Proxmox VE 8.x bilan 3 ta server yoki VM
+- PBS uchun 1 ta qo'shimcha VM
+- Tugunlar o'rtasida umumiy tarmoq
 
-## Создаём кластер
+## Klasterni yaratamiz
 
-На **первой ноде** инициализируем кластер:
+**Birinchi tugun**da klasterni ishga tushiramiz:
 
 ```bash
 pvecm create pve-prod
 ```
 
-Проверяем статус:
+Statusni tekshiramiz:
 
 ```bash
 pvecm status
 ```
 
-На **второй и третьей ноде** вступаем в кластер:
+**Ikkinchi va uchinchi tugun**da klasterga qo'shilmiz:
 
 ```bash
-pvecm add 192.168.1.10  # IP первой ноды
+pvecm add 192.168.1.10  # Birinchi tugunning IP si
 ```
 
-Теперь все три ноды видят друг друга. Проверить можно через GUI или командой `pvecm nodes`.
+Endi uchala tugun bir-birini ko'rmoqda. GUI orqali yoki `pvecm nodes` buyrug'i bilan tekshirish mumkin.
 
-## Настраиваем Proxmox Backup Server
+## Proxmox Backup Server ni sozlaymiz
 
-PBS удобнее всего поставить в LXC контейнер на одной из нод.
+PBS ni tugunlardan birida LXC konteyneriga o'rnatish qulay.
 
-Создаём контейнер с Debian 12, минимум 2 CPU и 2GB RAM. Затем внутри контейнера:
+Debian 12 bilan konteyner yaratamiz, kamida 2 CPU va 2GB RAM. So'ngra konteyner ichida:
 
 ```bash
-# Добавляем репозиторий PBS
+# PBS repositoriyasini qo'shamiz
 echo "deb http://download.proxmox.com/debian/pbs bookworm pbs-no-subscription" \
   > /etc/apt/sources.list.d/pbs.list
 
 apt update && apt install proxmox-backup-server
 ```
 
-После установки PBS доступен на порту `8007`.
+O'rnatilgandan so'ng PBS `8007` portida mavjud bo'ladi.
 
-## Подключаем PBS к Proxmox
+## PBS ni Proxmoxga ulaymiz
 
-В GUI Proxmox идём в **Datacenter → Storage → Add → Proxmox Backup Server** и вводим:
+Proxmox GUI da **Datacenter → Storage → Add → Proxmox Backup Server** bo'limiga o'tamiz va kiritamiz:
 
-- Server: IP адрес PBS
-- Datastore: имя хранилища
-- Fingerprint: берём из PBS GUI
+- Server: PBS ning IP manzili
+- Datastore: saqlash nomi
+- Fingerprint: PBS GUI dan olinadi
 
-## Настраиваем расписание бэкапов
+## Zaxira nusxa jadvalini sozlaymiz
 
-В **Datacenter → Backup** создаём задачу:
+**Datacenter → Backup** da vazifa yaratamiz:
 
 ```
-Schedule: 0 2 * * *  (каждую ночь в 02:00)
+Schedule: 0 2 * * *  (har kecha 02:00 da)
 Storage: pbs-storage
 Mode: Snapshot
 Max Backups: 7
 ```
 
-Теперь каждую ночь все VM автоматически бэкапятся с ротацией за 7 дней.
+Endi har kecha barcha VM lar 7 kunlik rotatsiya bilan avtomatik zaxiralanadi.
 
-## Итог
+## Natija
 
-За два часа получили полностью рабочий кластер с централизованными бэкапами. Следующий шаг — настроить мониторинг через Grafana + Prometheus, но это отдельная статья.
+Ikki soatda markazlashgan zaxira nusxalar bilan to'liq ishlaydigan klaster oldik. Keyingi qadam — Grafana + Prometheus orqali monitoringni sozlash, lekin bu alohida maqola.

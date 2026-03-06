@@ -2,9 +2,9 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title="Поиск — TZIM Blog" description="Поиск по статьям TZIM Blog">
+<Base title="Qidiruv — TZIM Blog" description="TZIM Blog maqolalari bo'yicha qidiruv">
   <div class="container page">
-    <h1>Поиск</h1>
+    <h1>Qidiruv</h1>
     <div id="search"></div>
   </div>
 </Base>
@@ -21,18 +21,18 @@ import Base from '../layouts/Base.astro';
         showImages: false,
         resetStyles: false,
         translations: {
-          placeholder: 'Поиск по статьям...',
-          zero_results: 'Ничего не найдено по запросу "[SEARCH_TERM]"',
-          many_results: '[COUNT] результатов по запросу "[SEARCH_TERM]"',
-          one_result: '[COUNT] результат по запросу "[SEARCH_TERM]"',
-          alt_search: 'Нет результатов по "[SEARCH_TERM]". Попробуем "[DIFFERENT_TERM]"?',
-          search_suggestion: 'Нет результатов по "[SEARCH_TERM]". Показываем результаты по "[DIFFERENT_TERM]"',
-          searching: 'Поиск по "[SEARCH_TERM]"...',
+          placeholder: 'Maqolalar bo\'yicha qidirish...',
+          zero_results: '"[SEARCH_TERM]" bo\'yicha hech narsa topilmadi',
+          many_results: '"[SEARCH_TERM]" bo\'yicha [COUNT] ta natija',
+          one_result: '"[SEARCH_TERM]" bo\'yicha [COUNT] ta natija',
+          alt_search: '"[SEARCH_TERM]" bo\'yicha natija yo\'q. "[DIFFERENT_TERM]" ni sinab ko\'raylikmi?',
+          search_suggestion: '"[SEARCH_TERM]" bo\'yicha natija yo\'q. "[DIFFERENT_TERM]" bo\'yicha natijalar ko\'rsatilmoqda',
+          searching: '"[SEARCH_TERM]" qidirilmoqda...',
         },
       });
     } catch {
       const el = document.getElementById('search');
-      if (el) el.innerHTML = '<p class="search-unavailable">Поиск доступен только после <code>npm run build</code>.</p>';
+      if (el) el.innerHTML = '<p class="search-unavailable">Qidiruv faqat <code>npm run build</code> dan keyin mavjud.</p>';
     }
   })();
 </script>

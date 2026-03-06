@@ -9,7 +9,7 @@ interface Props {
 const { post } = Astro.props;
 const { title, date, tags, readTime, excerpt, ogImage } = post.data;
 
-const formattedDate = new Intl.DateTimeFormat('ru-RU', {
+const formattedDate = new Intl.DateTimeFormat('uz-UZ', {
   year: 'numeric', month: 'long', day: 'numeric'
 }).format(date);
 
@@ -24,7 +24,7 @@ const jsonLd = {
   datePublished: isoDate,
   dateModified: isoDate,
   url: postUrl,
-  inLanguage: 'ru',
+  inLanguage: 'uz',
   author: {
     '@type': 'Person',
     name: 'TZIM',
@@ -52,13 +52,13 @@ const jsonLd = {
   </Fragment>
   <article class="container page">
 
-    <a href="/" class="back">← Все статьи</a>
+    <a href="/" class="back">← Barcha maqolalar</a>
 
     <header>
       <div class="meta">
         <time>{formattedDate}</time>
         <span>·</span>
-        <span>{readTime} мин чтения</span>
+        <span>{readTime} daqiqa o'qish</span>
       </div>
       <h1>{title}</h1>
       <p class="excerpt">{excerpt}</p>
@@ -78,7 +78,7 @@ const jsonLd = {
     <hr />
 
     <div class="post-footer">
-      <a href="/" class="back">← Все статьи</a>
+      <a href="/" class="back">← Barcha maqolalar</a>
       <div class="tags">
         {tags.map(tag => (
           <a href={`/tags/${tag}`} class="tag">{tag}</a>

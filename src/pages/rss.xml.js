@@ -7,7 +7,7 @@ export async function GET(context) {
 
   return rss({
     title: 'TZIM Blog',
-    description: 'DevOps: Docker, Proxmox, CI/CD',
+    description: 'DevOps: Docker, Proxmox, CI/CD — TZIM Blog',
     site: context.site,
     items: sorted.map(post => ({
       title: post.data.title,

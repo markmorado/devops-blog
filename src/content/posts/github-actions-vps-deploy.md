@@ -1,23 +1,23 @@
 ---
-title: "GitHub Actions для деплоя на VPS: кэш, артефакты и rollback за 30 секунд"
+title: "GitHub Actions bilan VPS ga deploy: kesh, artefaktlar va 30 soniyada rollback"
 date: 2025-02-14
-excerpt: "Строим production-ready CI/CD пайплайн на GitHub Actions с кэшированием Docker слоёв, умным rollback и уведомлениями в Telegram."
+excerpt: "GitHub Actions da Docker qatlamlarini keshlash, aqlli rollback va Telegram xabarnomalari bilan production-ready CI/CD pipeline quramiz."
 tags: ["ci-cd", "docker", "github-actions"]
 category: "ci-cd"
 readTime: 11
 featured: false
 ---
 
-## Цель
+## Maqsad
 
-Пайплайн должен делать следующее:
+Pipeline quyidagilarni bajarishi kerak:
 
-1. При пуше в `main` — собирать Docker образ и деплоить на VPS
-2. Кэшировать слои образа для ускорения сборки
-3. При провале — автоматически откатываться к предыдущей версии
-4. Уведомлять в Telegram об успехе или провале
+1. `main` ga push bo'lganda — Docker image yaratish va VPS ga deploy qilish
+2. Sburkani tezlashtirish uchun image qatlamlarini keshlash
+3. Muvaffaqiyatsizlikda — avtomatik oldingi versiyaga qaytish
+4. Muvaffaqiyat yoki muvaffaqiyatsizlik haqida Telegram da xabar berish
 
-## Структура пайплайна
+## Pipeline tuzilmasi
 
 ```yaml
 # .github/workflows/deploy.yml
@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Кэш Docker слоёв — ускоряет повторные сборки в 3-5 раз
+      # Docker qatlamlarini keshlash — takroriy sburkani 3-5 marta tezlashtiradi
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -58,12 +58,12 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            # Сохраняем текущую версию для rollback
+            # Rollback uchun joriy versiyani saqlaymiz
             CURRENT=$(docker inspect ${{ env.CONTAINER_NAME }} \
               --format='{{.Config.Image}}' 2>/dev/null || echo "none")
             echo $CURRENT > /tmp/rollback_image
 
-            # Загружаем и запускаем новый образ
+            # Yangi imageni yuklaymiz va ishga tushiramiz
             docker load < /tmp/${{ env.IMAGE_NAME }}.tar
             docker stop ${{ env.CONTAINER_NAME }} 2>/dev/null || true
             docker run -d \
@@ -72,7 +72,7 @@ jobs:
               -p 3000:3000 \
               ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-            # Проверяем что контейнер поднялся
+            # Konteyner ko'tarilganini tekshiramiz
             sleep 5
             docker ps | grep ${{ env.CONTAINER_NAME }} || exit 1
 
@@ -81,7 +81,7 @@ jobs:
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TG_BOT_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TG_CHAT_ID }}" \
-            -d text="✅ Deploy успешен: ${{ github.sha }}"
+            -d text="✅ Deploy muvaffaqiyatli: ${{ github.sha }}"
 
       - name: Rollback on failure
         if: failure()
@@ -104,21 +104,21 @@ jobs:
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TG_BOT_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TG_CHAT_ID }}" \
-            -d text="❌ Deploy упал, откат выполнен: ${{ github.sha }}"
+            -d text="❌ Deploy muvaffaqiyatsiz, rollback bajarildi: ${{ github.sha }}"
 ```
 
-## Secrets в GitHub
+## GitHub da Secrets
 
-Нужно добавить в **Settings → Secrets and variables → Actions**:
+**Settings → Secrets and variables → Actions** ga qo'shish kerak:
 
-| Secret | Что это |
+| Secret | Bu nima |
 |--------|---------|
-| `VPS_HOST` | IP или домен VPS |
-| `VPS_USER` | Пользователь SSH |
-| `VPS_SSH_KEY` | Приватный SSH ключ |
-| `TG_BOT_TOKEN` | Токен Telegram бота |
-| `TG_CHAT_ID` | ID чата для уведомлений |
+| `VPS_HOST` | VPS IP yoki domeni |
+| `VPS_USER` | SSH foydalanuvchisi |
+| `VPS_SSH_KEY` | Shaxsiy SSH kaliti |
+| `TG_BOT_TOKEN` | Telegram bot tokeni |
+| `TG_CHAT_ID` | Xabarlar uchun chat ID |
 
-## Результат
+## Natija
 
-Первая сборка занимает ~3 минуты. Повторные — **40-60 секунд** благодаря кэшу Docker слоёв. При провале деплоя сервис автоматически возвращается к предыдущей версии, а в Telegram приходит уведомление с SHA коммита.
+Birinchi sbur ~3 daqiqa davom etadi. Takroriy — Docker qatlamlari keshi tufayli **40-60 soniya**. Deploy muvaffaqiyatsiz bo'lganda servis avtomatik oldingi versiyaga qaytadi, Telegram da esa commit SHA bilan xabar keladi.

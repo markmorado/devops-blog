@@ -21,22 +21,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const CATEGORY_LABELS: Record<string, string> = {
   'ci-cd':          'CI/CD',
-  'virtualization': 'Виртуализация',
-  'infrastructure': 'Инфраструктура',
+  'virtualization': 'Virtualizatsiya',
+  'infrastructure': 'Infratuzilma',
+  'monitoring':     'Monitoring',
 };
 
 const { category, posts } = Astro.props;
 const label = CATEGORY_LABELS[category] ?? category;
 ---
 
-<Base title={`${label} — TZIM Blog`} description={`Статьи по категории ${label}`}>
+<Base title={`${label} — TZIM Blog`} description={`${label} kategoriyasidagi maqolalar`}>
   <div class="container page">
-    <a href="/categories" class="back">← Все категории</a>
+    <a href="/categories" class="back">← Barcha kategoriyalar</a>
 
     <header>
-      <p class="label">Категория</p>
+      <p class="label">Kategoriya</p>
       <h1>{label}</h1>
-      <p class="count">{posts.length} {posts.length === 1 ? 'статья' : 'статей'}</p>
+      <p class="count">{posts.length} ta maqola</p>
     </header>
 
     <div class="posts">

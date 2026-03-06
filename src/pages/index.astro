@@ -10,8 +10,9 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))];
 
 const CATEGORY_LABELS: Record<string, string> = {
   'ci-cd':          'CI/CD',
-  'virtualization': 'Виртуализация',
-  'infrastructure': 'Инфраструктура',
+  'virtualization': 'Virtualizatsiya',
+  'infrastructure': 'Infratuzilma',
+  'monitoring':     'Monitoring',
 };
 
 // Категории с количеством статей
@@ -28,7 +29,7 @@ const jsonLd = {
   name: 'TZIM Blog',
   description: 'DevOps: Docker, Proxmox, CI/CD',
   url: Astro.site?.toString(),
-  inLanguage: 'ru',
+  inLanguage: 'uz',
   author: {
     '@type': 'Person',
     name: 'TZIM',
@@ -51,9 +52,9 @@ const jsonLd = {
   <div class="container page">
 
     <section class="hero">
-      <h1>Заметки об инфраструктуре</h1>
+      <h1>Infratuzilma haqida eslatmalar</h1>
       <p class="hero-desc">
-        Docker, Proxmox, DNS, CI/CD — реальные решения без воды.
+        Docker, Proxmox, DNS, CI/CD — suvsiz haqiqiy yechimlar.
       </p>
     </section>
 
@@ -66,7 +67,7 @@ const jsonLd = {
 
       <aside>
         <div class="aside-section">
-          <h2>Категории</h2>
+          <h2>Kategoriyalar</h2>
           <ul class="cat-list">
             {categories.map(([slug, count]) => (
               <li>
@@ -80,7 +81,7 @@ const jsonLd = {
         </div>
 
         <div class="aside-section">
-          <h2>Теги</h2>
+          <h2>Teglar</h2>
           <div class="tag-list">
             {allTags.map(tag => (
               <a href={`/tags/${tag}`} class="tag">{tag}</a>
@@ -89,7 +90,7 @@ const jsonLd = {
         </div>
 
         <div class="aside-section">
-          <h2>Подписка</h2>
+          <h2>Obuna</h2>
           <p><a href="/rss.xml">RSS Feed</a></p>
           <p><a href="https://t.me/yourchannel">Telegram</a></p>
         </div>

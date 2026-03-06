@@ -1,22 +1,22 @@
 ---
-title: "Grafana + Prometheus: мониторинг серверов за 1 час"
+title: "Grafana + Prometheus: 1 soatda serverlarni monitoring qilish"
 date: 2026-03-06
-excerpt: "Разворачиваем стек мониторинга через Docker Compose: Prometheus собирает метрики, Node Exporter следит за серверами, Grafana рисует дашборды."
+excerpt: "Docker Compose orqali monitoring stekini o'rnatamiz: Prometheus metrikalarni yig'adi, Node Exporter serverlarni kuzatadi, Grafana dashboardlar chizadi."
 tags: ["monitoring", "docker", "grafana", "prometheus"]
 category: "monitoring"
 readTime: 10
 featured: false
 ---
 
-## Что получим в итоге
+## Natijada nima olamiz
 
-Полноценный стек мониторинга из трёх компонентов:
+Uch komponentdan iborat to'liq monitoring steki:
 
-- **Prometheus** — собирает и хранит метрики
-- **Node Exporter** — экспортирует метрики хоста (CPU, RAM, диск, сеть)
-- **Grafana** — визуализация и алерты
+- **Prometheus** — metrikalarni yig'adi va saqlaydi
+- **Node Exporter** — host metrikalarini eksport qiladi (CPU, RAM, disk, tarmoq)
+- **Grafana** — vizualizatsiya va ogohlantirishlar
 
-Всё поднимаем через Docker Compose на одном сервере.
+Hammasi bitta serverda Docker Compose orqali o'rnatiladi.
 
 ## Docker Compose
 
@@ -69,7 +69,7 @@ volumes:
   grafana_data:
 ```
 
-## Конфиг Prometheus
+## Prometheus konfiguratsiyasi
 
 ```yaml
 # prometheus.yml
@@ -87,57 +87,57 @@ scrape_configs:
       - targets: ['localhost:9100']
 ```
 
-Node Exporter запущен с `network_mode: host`, поэтому Prometheus достаёт его через `localhost:9100`.
+Node Exporter `network_mode: host` bilan ishlamoqda, shuning uchun Prometheus uni `localhost:9100` orqali oladi.
 
-## Запускаем
+## Ishga tushiramiz
 
 ```bash
 docker compose up -d
 ```
 
-Проверяем, что всё поднялось:
+Hammasining ko'tarilganini tekshiramiz:
 
 ```bash
 docker compose ps
 ```
 
-Через 30 секунд Prometheus начнёт собирать метрики. Проверить можно на `http://your-server:9090/targets` — статус всех job должен быть `UP`.
+30 soniyadan so'ng Prometheus metrikalarni yig'a boshlaydi. `http://your-server:9090/targets` da tekshirish mumkin — barcha job lar holati `UP` bo'lishi kerak.
 
-## Подключаем Grafana
+## Grafana ni ulaymiz
 
-1. Открываем `http://your-server:3000`, логин `admin` / пароль из `GF_SECURITY_ADMIN_PASSWORD`
-2. Идём в **Connections → Data Sources → Add data source → Prometheus**
-3. URL: `http://prometheus:9090` (контейнеры в одной сети)
-4. Нажимаем **Save & Test**
+1. `http://your-server:3000` ni ochamiz, login `admin` / `GF_SECURITY_ADMIN_PASSWORD` dan parol
+2. **Connections → Data Sources → Add data source → Prometheus** ga o'tamiz
+3. URL: `http://prometheus:9090` (konteynerlar bir tarmoqda)
+4. **Save & Test** ni bosamiz
 
-## Готовый дашборд
+## Tayyor dashboard
 
-Вместо того чтобы строить дашборд вручную, импортируем готовый из Grafana Labs:
+Dashboardni qo'lda qurishning o'rniga, Grafana Labs dan tayyor narsani import qilamiz:
 
-1. В Grafana: **Dashboards → Import**
-2. Вводим ID `1860` (Node Exporter Full)
-3. Выбираем источник данных Prometheus
+1. Grafana da: **Dashboards → Import**
+2. `1860` ID ni kiritamiz (Node Exporter Full)
+3. Prometheus ma'lumot manbasini tanlaymiz
 4. **Import**
 
-Получаем дашборд с ~30 панелями: загрузка CPU, использование RAM, I/O дисков, сетевой трафик, температура, uptime.
+~30 panelli dashboard olamiz: CPU yuklanishi, RAM ishlatilishi, disk I/O, tarmoq trafigi, harorat, uptime.
 
-## Алерт на высокую загрузку CPU
+## Yuqori CPU yuklama uchun ogohlantirish
 
-В Grafana идём в **Alerting → Alert rules → New alert rule**:
+Grafana da **Alerting → Alert rules → New alert rule** ga o'tamiz:
 
 ```
 Condition: avg by (instance) (rate(node_cpu_seconds_total{mode!="idle"}[5m])) * 100 > 80
 For: 5m
 ```
 
-Настраиваем Contact point (email, Telegram, Slack) в **Alerting → Contact points**.
+**Alerting → Contact points** da Contact point (email, Telegram, Slack) sozlaymiz.
 
-## Добавляем мониторинг Docker-контейнеров
+## Docker konteynerlar monitoringini qo'shamiz
 
-Для метрик самих контейнеров добавляем cAdvisor:
+Konteynerlarning o'z metrikalari uchun cAdvisor qo'shamiz:
 
 ```yaml
-# Дополнение к docker-compose.yml
+# docker-compose.yml ga qo'shimcha
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -155,7 +155,7 @@ For: 5m
       - "8080:8080"
 ```
 
-И добавляем job в `prometheus.yml`:
+`prometheus.yml` ga job qo'shamiz:
 
 ```yaml
   - job_name: 'cadvisor'
@@ -163,8 +163,8 @@ For: 5m
       - targets: ['cadvisor:8080']
 ```
 
-Импортируем дашборд с ID `14282` (Cadvisor exporter) — получаем CPU, RAM и сеть по каждому контейнеру.
+ID `14282` (Cadvisor exporter) bilan dashboard import qilamiz — har bir konteyner bo'yicha CPU, RAM va tarmoq olamiz.
 
-## Итог
+## Natija
 
-За час получили рабочий мониторинг: метрики хоста через Node Exporter, красивые дашборды в Grafana и алерты при проблемах. Следующий шаг — вынести Prometheus и Grafana на отдельный сервер и добавить мониторинг нескольких хостов через единую точку сбора.
+Bir soatda ishlaydigan monitoring oldik: Node Exporter orqali host metrikalari, Grafana da chiroyli dashboardlar va muammolar uchun ogohlantirishlar. Keyingi qadam — Prometheus va Grafana ni alohida serverga ko'chirish va bitta yig'ish nuqtasi orqali bir nechta hostlarni monitoring qilish.

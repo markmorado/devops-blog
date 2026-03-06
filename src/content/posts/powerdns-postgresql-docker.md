@@ -1,23 +1,23 @@
 ---
-title: "PowerDNS с PostgreSQL бэкендом в Docker: от нуля до продакшена"
+title: "PowerDNS va PostgreSQL Docker da: noldan prodakshengacha"
 date: 2025-02-20
-excerpt: "Поднимаем полноценный DNS сервер на PowerDNS с хранением зон в PostgreSQL. Docker Compose, автоматические миграции и PowerDNS-Admin в комплекте."
+excerpt: "PostgreSQL da zonalarni saqlab, PowerDNS da to'liq DNS server o'rnatamiz. Docker Compose, avtomatik migratsiyalar va PowerDNS-Admin bilan birga."
 tags: ["dns", "docker", "postgresql"]
 category: "infrastructure"
 readTime: 9
 featured: false
 ---
 
-## Почему PowerDNS + PostgreSQL
+## Nima uchun PowerDNS + PostgreSQL
 
-BIND хорош, но управлять зонами через текстовые файлы в 2025 году — боль. PowerDNS с SQL бэкендом даёт:
+BIND yaxshi, lekin 2025 yilda matn fayllari orqali zonalarni boshqarish — azob. PowerDNS SQL backend bilan beradi:
 
-- API для управления зонами
-- Веб-интерфейс через PowerDNS-Admin
-- Удобный бэкап (просто дамп БД)
-- Кластеризацию без ручной синхронизации файлов
+- Zonalarni boshqarish uchun API
+- PowerDNS-Admin orqali veb-interfeys
+- Qulay zaxira nusxa (shunchaki MB dump)
+- Fayllarni qo'lda sinxronlashsiz klasterlash
 
-## Структура проекта
+## Loyiha tuzilmasi
 
 ```
 powerdns/
@@ -70,10 +70,10 @@ volumes:
   pgdata:
 ```
 
-## Конфигурация pdns.conf
+## Konfiguratsiya pdns.conf
 
 ```ini
-# Бэкенд
+# Backend
 launch=gpgsql
 gpgsql-host=postgres
 gpgsql-dbname=pdns
@@ -89,18 +89,18 @@ webserver-port=8081
 webserver-allow-from=0.0.0.0/0
 ```
 
-## Запуск
+## Ishga tushirish
 
 ```bash
 cp .env.example .env
-# Редактируем .env — задаём POSTGRES_PASSWORD и PDNS_API_KEY
+# .env ni tahrirlashimiz kerak — POSTGRES_PASSWORD va PDNS_API_KEY ni o'rnatamiz
 
 docker compose up -d
 ```
 
-Через 30 секунд PowerDNS-Admin доступен на `http://localhost:9191`.
+30 soniyadan so'ng PowerDNS-Admin `http://localhost:9191` da mavjud bo'ladi.
 
-## Создаём первую зону через API
+## API orqali birinchi zonani yaratamiz
 
 ```bash
 curl -X POST http://localhost:8081/api/v1/servers/localhost/zones \
@@ -113,8 +113,8 @@ curl -X POST http://localhost:8081/api/v1/servers/localhost/zones \
   }'
 ```
 
-Зона создана. Добавляем A запись аналогичным образом через API или через веб-интерфейс.
+Zona yaratildi. A yozuvini xuddi shunday API yoki veb-interfeys orqali qo'shamiz.
 
-## Итог
+## Natija
 
-Полноценный DNS сервер с веб-интерфейсом поднимается за 10 минут. Бэкап — просто `pg_dump`, восстановление — `pg_restore` на новом сервере и `docker compose up`.
+Veb-interfeys bilan to'liq DNS server 10 daqiqada o'rnatiladi. Zaxira nusxa — shunchaki `pg_dump`, tiklash — yangi serverda `pg_restore` va `docker compose up`.

@@ -16,10 +16,10 @@ for (const post of posts) {
 const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 ---
 
-<Base title="Теги — TZIM Blog" description="Все теги блога TZIM Blog">
+<Base title="Teglar — TZIM Blog" description="TZIM Blog barcha teglari">
   <div class="container page">
-    <h1>Теги</h1>
-    <p class="subtitle">{tags.length} тегов · {posts.length} статей</p>
+    <h1>Teglar</h1>
+    <p class="subtitle">{tags.length} ta teg · {posts.length} ta maqola</p>
 
     <div class="tag-grid">
       {tags.map(([tag, count]) => (

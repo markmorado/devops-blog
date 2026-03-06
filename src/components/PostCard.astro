@@ -9,14 +9,15 @@ interface Props {
 
 const CATEGORY_LABELS: Record<string, string> = {
   'ci-cd':          'CI/CD',
-  'virtualization': 'Виртуализация',
-  'infrastructure': 'Инфраструктура',
+  'virtualization': 'Virtualizatsiya',
+  'infrastructure': 'Infratuzilma',
+  'monitoring':     'Monitoring',
 };
 
 const { post } = Astro.props;
 const { title, date, tags, readTime, excerpt, category } = post.data;
 
-const formattedDate = new Intl.DateTimeFormat('ru-RU', {
+const formattedDate = new Intl.DateTimeFormat('uz-UZ', {
   year: 'numeric', month: 'short', day: 'numeric'
 }).format(date);
 ---
@@ -25,7 +26,7 @@ const formattedDate = new Intl.DateTimeFormat('ru-RU', {
   <div class="post-meta">
     <time>{formattedDate}</time>
     <span>·</span>
-    <span>{readTime} мин</span>
+    <span>{readTime} daqiqa</span>
     {category && (
       <>
         <span>·</span>
