@@ -1,8 +1,9 @@
 ---
 title: "HunyuanImage 3.0-Instruct modeli to'liq open-source ga aylandi"
-slug: "hunyuanimage-30-instruct-open-source-1029"
-pubDate: 2026-03-14
+date: 2026-03-14
+excerpt: "Tencent kompaniyasining HunyuanImage 3.0-Instruct modeli ochiq kodda taqdim etildi va global Arena Image Edit reytingida Tier-1 darajasiga ko'tarildi."
 tags: ["open-source", "hunyuanimage", "ai", "machine-learning", "tencent"]
+readTime: 3
 draft: false
 ---
 
@@ -24,5 +25,3 @@ Loyiha manbalari:
 - GitHub: https://github.com/Tencent-Hunyuan/HunyuanImage-3.0
 - Hugging Face (Instruct): https://huggingface.co/tencent/HunyuanImage-3.0-Instruct
 - Hugging Face (Distil): https://huggingface.co/tencent/HunyuanImage-3.0-Instruct-Distil
-
-Tags: open-source, hunyuanimage, ai, machine-learning, tencent
